@@ -1,0 +1,12 @@
+---
+import { Debug } from "astro:components";
+//import { pb } from "../../backend";
+import Layout from "../../layouts/Layout.astro";
+
+export const prerender = false;
+
+const personnes = await Astro.locals.pb.collection("personnes").getFullList();
+---
+<Layout pageTitle="Liste des personnes">
+  <Debug {personnes} />
+</Layout>
