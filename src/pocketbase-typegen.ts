@@ -11,7 +11,7 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
-	Persones = "persones",
+	Personnes = "personnes",
 	Users = "users",
 }
 
@@ -86,7 +86,7 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export type PersonesRecord = {
+export type PersonnesRecord = {
 	id: string
 	nom?: string
 }
@@ -110,7 +110,7 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
-export type PersonesResponse<Texpand = unknown> = Required<PersonesRecord> & BaseSystemFields<Texpand>
+export type PersonnesResponse<Texpand = unknown> = Required<PersonnesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -121,7 +121,7 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
-	persones: PersonesRecord
+	personnes: PersonnesRecord
 	users: UsersRecord
 }
 
@@ -131,7 +131,7 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
-	persones: PersonesResponse
+	personnes: PersonnesResponse
 	users: UsersResponse
 }
 
@@ -144,6 +144,6 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_mfas'): RecordService<MfasResponse>
 	collection(idOrName: '_otps'): RecordService<OtpsResponse>
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
-	collection(idOrName: 'persones'): RecordService<PersonesResponse>
+	collection(idOrName: 'personnes'): RecordService<PersonnesResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 }
