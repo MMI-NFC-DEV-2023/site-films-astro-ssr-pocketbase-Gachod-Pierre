@@ -5,7 +5,7 @@ import { defineMiddleware } from "astro/middleware";
 
 export const onRequest = defineMiddleware(
   async ({ locals, request }, next: () => any) => {
-    locals.pb = new PocketBase("http://127.0.0.1:8090");
+    locals.pb = new PocketBase("http://127.0.0.1:9004");
 
     // load the store data from the request cookie string
     locals.pb.authStore.loadFromCookie(request.headers.get("cookie") || "");

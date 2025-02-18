@@ -11,8 +11,7 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
-	Films = "films",
-	Personnes = "personnes",
+	Persones = "persones",
 	Users = "users",
 }
 
@@ -87,43 +86,9 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
-export enum FilmsLangueOptions {
-	"EN" = "EN",
-	"FR" = "FR",
-}
-export type FilmsRecord = {
-	created?: IsoDateString
-	date_sortie?: IsoDateString
+export type PersonesRecord = {
 	id: string
-	langue?: FilmsLangueOptions
-	synopsis?: HTMLString
-	titre?: string
-	updated?: IsoDateString
-}
-
-export enum PersonnesNationaliteOptions {
-	"FR" = "FR",
-	"US" = "US",
-	"UK" = "UK",
-}
-
-export enum PersonnesProfessionOptions {
-	"réalisateur" = "réalisateur",
-	"acteur" = "acteur",
-	"scénariste" = "scénariste",
-	"producteur" = "producteur",
-}
-export type PersonnesRecord = {
-	created?: IsoDateString
-	date_deces?: IsoDateString
-	date_naissance?: IsoDateString
-	id: string
-	lieu_naissance?: string
-	nationalite?: PersonnesNationaliteOptions[]
 	nom?: string
-	prenom?: string
-	profession?: PersonnesProfessionOptions[]
-	updated?: IsoDateString
 }
 
 export type UsersRecord = {
@@ -145,8 +110,7 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
-export type FilmsResponse<Texpand = unknown> = Required<FilmsRecord> & BaseSystemFields<Texpand>
-export type PersonnesResponse<Texpand = unknown> = Required<PersonnesRecord> & BaseSystemFields<Texpand>
+export type PersonesResponse<Texpand = unknown> = Required<PersonesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -157,8 +121,7 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
-	films: FilmsRecord
-	personnes: PersonnesRecord
+	persones: PersonesRecord
 	users: UsersRecord
 }
 
@@ -168,8 +131,7 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
-	films: FilmsResponse
-	personnes: PersonnesResponse
+	persones: PersonesResponse
 	users: UsersResponse
 }
 
@@ -182,7 +144,6 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_mfas'): RecordService<MfasResponse>
 	collection(idOrName: '_otps'): RecordService<OtpsResponse>
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
-	collection(idOrName: 'films'): RecordService<FilmsResponse>
-	collection(idOrName: 'personnes'): RecordService<PersonnesResponse>
+	collection(idOrName: 'persones'): RecordService<PersonesResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 }
