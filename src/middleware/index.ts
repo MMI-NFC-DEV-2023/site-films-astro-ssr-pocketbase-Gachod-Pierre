@@ -5,6 +5,8 @@ import { defineMiddleware } from "astro/middleware";
 
 export const onRequest = defineMiddleware(
   async ({ locals, request }, next: () => any) => {
+    console.log("onRequest middleware", import.meta.env.VITE_URL_POCKETBASE);
+
     locals.pb = new PocketBase(import.meta.env.VITE_URL_POCKETBASE);
 
     // load the store data from the request cookie string

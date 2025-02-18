@@ -4,9 +4,14 @@ import { Debug } from "astro:components";
 import Layout from "../../layouts/Layout.astro";
 
 export const prerender = false;
-
-const personnes = await Astro.locals.pb.collection("personnes").getFullList();
+let personnes;
+try {
+  personnes = await Astro.locals.pb.collection("personnes").getFullList();
+} catch (error) {
+  console.log("err dans ", error);
+}
 ---
+
 <Layout pageTitle="Liste des personnes">
   <Debug {personnes} />
 </Layout>
