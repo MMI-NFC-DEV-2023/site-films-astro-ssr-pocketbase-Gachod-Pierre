@@ -1,0 +1,18 @@
+---
+import LinkFilm from "./LinkFilm.astro";
+import type { FilmsResponse } from "../pocketbase-typegen";
+interface Props {
+  films: FilmsResponse[];
+}
+const { films } = Astro.props;
+---
+
+{
+  films.map((film, index) => (
+    <>
+      <LinkFilm {...film} />
+      {index !== films.length - 2 ? ", " : ""}
+      {index === films.length - 2 ? " et " : ""}
+    </>
+  ))
+}
