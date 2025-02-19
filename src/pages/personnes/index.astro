@@ -1,57 +1,23 @@
 ---
 import { Debug } from "astro:components";
-//import { pb } from "../../backend";
 import Layout from "../../layouts/Layout.astro";
-import type {
-  FilmsResponse,
-  PersonnesResponse,
-} from "../../pocketbase-typegen";
-import type { RolesResponse } from "../../pocketbase-typegen";
+import type { FilmsResponse, PersonnesResponse, RolesResponse } from "../../pocketbase-typegen";
+import LinkPersonne from "../../components/LinkPersonne.astro";
 
 export const prerender = false;
 
-const personnes = await Astro.locals.pb
-  .collection<
-    PersonnesResponse<{
-      films_via_producteur: FilmsResponse[];
-      films_via_scenaristes: FilmsResponse[];
-      roles_via_acteur: RolesResponse[];
-    }>
-  >("personnes")
-  .getFullList({
-    expand: "films_via_producteur, films_via_scenaristes, roles_via_acteur",
-  });
+type Response = FilmsResponse<{
+  producteur: PersonnesResponse;
+  scenaristes: PersonnesResponse[];
+  roles: RolesResponse<{acteur: PersonnesResponse}>[];
+}>;
+
+const listPersonnes = await Astro.locals.pb
+  .collection("personnes")
+  .getFullList();
 ---
 
 <Layout pageTitle="Liste des personnes">
-  {
-    personnes.map((personne) => (
-      <div>
-        <h2>Personne : {personne.nom}</h2>
-        <p>
-          films ou il est producteur : {""}
-          {personne.expand?.films_via_producteur?.map((f) => (
-            <span>{f.titre + ", "}</span>
-          ))}
-        </p>
-        <p>
-          films ou il est scénariste : {""}
-          {personne.expand?.films_via_scenaristes?.map((f) => (
-            <span>{f.titre + ", "}</span>
-          ))}
-        </p>
-        <p>
-          Rôles joués : {""}
-          {personne.expand?.roles_via_acteur?.map((f) => (
-            <span>
-              {f.nom_role + " joué par " + personne.nom}
-            </span>
-          ))}
-        </p>
-      </div>
-    ))
-  }
-  <Fragment>
-    <Debug {personnes} />
-  </Fragment>
+  {listPersonnes.map(personne => <LinkPersonne {...personne} />)}
+  <Debug {listPersonnes} />
 </Layout>

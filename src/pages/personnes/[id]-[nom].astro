@@ -1,0 +1,64 @@
+---
+import { Debug } from "astro:components";
+//import { pb } from "../../backend";
+import Layout from "../../layouts/Layout.astro";
+import type {
+  FilmsResponse,
+  PersonnesResponse,
+} from "../../pocketbase-typegen";
+import type { RolesResponse } from "../../pocketbase-typegen";
+import LinkFilm from "../../components/LinkFilm.astro";
+
+export const prerender = false;
+
+const id = Astro.params.id;
+console.log("id dans personnes : ", id);
+
+
+const personne = await Astro.locals.pb
+  .collection<
+    PersonnesResponse<{
+      films_via_producteur?: FilmsResponse[];
+      films_via_scenaristes?: FilmsResponse[];
+      roles_via_acteur?: RolesResponse<{films_via_roles: FilmsResponse[]}>[];
+    }>
+  >("personnes")
+  .getOne(id!,{
+    expand: "films_via_producteur, films_via_scenaristes, roles_via_acteur.films_via_roles",
+  });
+---
+
+<Layout pageTitle="Liste des personnes">
+  
+      <div>
+        <h2>Personne : {personne.nom}</h2>
+        <p>
+          films ou il est producteur : {""}
+          {personne.expand?.films_via_producteur?.map((f) => (
+            <span>{f.titre + ", "}</span>
+          ))}
+        </p>
+        <p>
+          films ou il est scénariste : {""}
+          {personne.expand?.films_via_scenaristes?.map((f) => (
+            <span>{f.titre + ", "}</span>
+          ))}
+        </p>
+        <p>
+          Rôles joués : {""}
+          {personne.expand?.roles_via_acteur?.map((f) => (
+            <>
+              <span>
+                {f.nom_role + " joué dans : "}
+              </span>
+              
+              {f.expand?.films_via_roles && <LinkFilm {...f.expand.films_via_roles[0]} />}
+            </>
+            <Debug {f} />
+          ))}
+        </p>
+      </div>
+  <Fragment>
+    <Debug {personne} />
+  </Fragment>
+</Layout>
