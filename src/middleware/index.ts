@@ -4,29 +4,33 @@ import PocketBase from "pocketbase";
 import { defineMiddleware } from "astro/middleware";
 
 export const onRequest = defineMiddleware(
-  async ({ locals, request }, next: () => any) => {
-    console.log("onRequest middleware", import.meta.env.VITE_URL_POCKETBASE);
+  async ({ locals, request, isPrerendered }, next: () => any) => {
+    console.log("onRequest middleware", import.meta.env.PUBLIC_POKEAPI);
 
-    locals.pb = new PocketBase(import.meta.env.VITE_URL_POCKETBASE);
+    locals.pb = new PocketBase(import.meta.env.PUBLIC_POKEAPI);
 
-    // load the store data from the request cookie string
-    locals.pb.authStore.loadFromCookie(request.headers.get("cookie") || "");
-
-    try {
-      // get an up-to-date auth store state by verifying and refreshing the loaded auth record (if any)
-      if (locals.pb.authStore.isValid) {
-        const { record } = await locals.pb.collection("users").authRefresh();
-        locals.user = record;
+if (!isPrerendered) {;
+      // load the store data from the request cookie string
+      locals.pb.authStore.loadFromCookie(request.headers.get("cookie") || "");
+  
+      try {
+        // get an up-to-date auth store state by verifying and refreshing the loaded auth record (if any)
+        if (locals.pb.authStore.isValid) {
+          const { record } = await locals.pb.collection("users").authRefresh();
+          locals.user = record;
+        }
+      } catch (_) {
+        // clear the auth store on failed refresh
+        locals.pb.authStore.clear();
       }
-    } catch (_) {
-      // clear the auth store on failed refresh
-      locals.pb.authStore.clear();
-    }
+}
 
     const response = await next();
 
-    // send back the default 'pb_auth' cookie to the client with the latest store state
-    response.headers.append("set-cookie", locals.pb.authStore.exportToCookie());
+if (!isPrerendered) {
+      // send back the default 'pb_auth' cookie to the client with the latest store state
+      response.headers.append("set-cookie", locals.pb.authStore.exportToCookie());
+}
 
     return response;
   }
