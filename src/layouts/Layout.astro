@@ -17,15 +17,32 @@ const { pageTitle } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
   </head>
-  <body>
-    <nav>
-      <a href="/">Accueil</a>
-      <a href="/personnes/">Liste des personnes</a>
-      <a href="/films/">Liste des films</a>
-      <a href="/auth-password/">Connexion mdp</a>
-      <a href="/auth-github/">Connexion OAUTH2</a>
-      <a href="/personnes/edit">ajouter personne</a>
-    </nav>
-    <slot />
+  <body class="bg-gray-100 text-gray-900">
+    <header class="bg-white shadow-md">
+      <nav class="container mx-auto flex justify-between items-center p-4">
+        <div class="text-xl font-bold">Mon Site</div>
+        <div class="space-x-4">
+          <a href="/" class="text-gray-700 hover:text-blue-500">Accueil</a>
+          <a href="/personnes/" class="text-gray-700 hover:text-blue-500"
+            >Liste des personnes</a
+          >
+          <a href="/films/" class="text-gray-700 hover:text-blue-500"
+            >Liste des films</a
+          >
+          <a href="/auth-password/" class="text-gray-700 hover:text-blue-500"
+            >Connexion mdp</a
+          >
+          <a href="/auth-github/" class="text-gray-700 hover:text-blue-500"
+            >Connexion OAUTH2</a
+          >
+          <a href="/personnes/edit" class="text-gray-700 hover:text-blue-500"
+            >Ajouter personne</a
+          >
+        </div>
+      </nav>
+    </header>
+    <main class="container mx-auto p-4">
+      <slot />
+    </main>
   </body>
 </html>

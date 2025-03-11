@@ -116,7 +116,7 @@ export type PersonnesRecord = {
 	dateNaissance?: IsoDateString
 	id: string
 	lieuNaissance?: string
-	nom?: string
+	nom: string
 	profession?: PersonnesProfessionOptions[]
 }
 

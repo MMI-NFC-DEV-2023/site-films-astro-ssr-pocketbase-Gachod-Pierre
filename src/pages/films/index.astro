@@ -1,7 +1,11 @@
 ---
 import { Debug } from "astro:components";
 import Layout from "../../layouts/Layout.astro";
-import type { FilmsResponse, PersonnesResponse, RolesResponse } from "../../pocketbase-typegen";
+import type {
+  FilmsResponse,
+  PersonnesResponse,
+  RolesResponse,
+} from "../../pocketbase-typegen";
 import LinkFilm from "../../components/LinkFilm.astro";
 
 export const prerender = false;
@@ -9,15 +13,22 @@ export const prerender = false;
 type Response = FilmsResponse<{
   producteur: PersonnesResponse;
   scenaristes: PersonnesResponse[];
-  roles: RolesResponse<{acteur: PersonnesResponse}>[];
+  roles: RolesResponse<{ acteur: PersonnesResponse }>[];
 }>;
 
-const listFilms = await Astro.locals.pb
-  .collection("films")
-  .getFullList();
+const listFilms = await Astro.locals.pb.collection("films").getFullList();
 ---
 
 <Layout pageTitle="Liste des films">
-  {listFilms.map(film => <LinkFilm {...film} />)}
+  <h1 class="text-2xl font-bold mb-4">Liste des films</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {
+      listFilms.map((film) => (
+        <div class="bg-white p-4 shadow-md rounded-lg hover:shadow-lg transition">
+          <LinkFilm {...film} />
+        </div>
+      ))
+    }
+  </div>
   <Debug {listFilms} />
 </Layout>

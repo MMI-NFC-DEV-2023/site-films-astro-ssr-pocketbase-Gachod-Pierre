@@ -21,8 +21,8 @@ const pb = Astro.locals.pb;
 let personne;
 try {
   personne = id
-  ? await pb.collection("personnes").getOne(id)
-  : ({} as PersonnesResponse);
+    ? await pb.collection("personnes").getOne(id)
+    : ({} as PersonnesResponse);
 } catch (error) {
   console.error("Erreur lors de la récupération de la personne", error);
   message = (error as ClientResponseError).message;
@@ -32,12 +32,12 @@ try {
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();
   try {
-  const personne = await (id
-    ? pb.collection("personnes").update(id, data)
-    : pb.collection("personnes").create(data));
-  return Astro.redirect(
-    `/personnes/${personne.id}-${encodeURIComponent(personne.nom)}`
-  );
+    const personne = await (id
+      ? pb.collection("personnes").update(id, data)
+      : pb.collection("personnes").create(data));
+    return Astro.redirect(
+      `/personnes/${personne.id}-${encodeURIComponent(personne.nom)}`
+    );
   } catch (error) {
     console.error("erreur à la maj de la personne ou de la création", error);
     message = (error as ClientResponseError).message;
@@ -50,14 +50,22 @@ function formatDate(date: string) {
 ---
 
 <Layout pageTitle="Edit personne">
-  <Debug {personne} />
-  <h1>Edit personne</h1>
+  <!-- <Debug {personne} /> -->
+  {message && <p class="text-red-600">Erreur : {message}</p>}
+  <h1 class="text-2xl font-bold mb-4">Edit personne</h1>
 
-  <form class="*:contents grid grid-cols-2" method="post">
+  <form
+    class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6 shadow-md rounded-lg"
+    method="post"
+  >
     <input type="hidden" name="id" value={personne.id} />
-    <label>
-      Nationalite
-      <select name="Nationalite">
+
+    <label class="block">
+      <span class="text-gray-700">Nationalité</span>
+      <select
+        name="Nationalite"
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+      >
         {
           Object.entries(PersonnesNationaliteOptions).map(([key, value]) => (
             <option selected={value === personne.Nationalite} value={value}>
@@ -68,51 +76,70 @@ function formatDate(date: string) {
       </select>
     </label>
 
-    <label
-      >Date de deces
+    <label class="block">
+      <span class="text-gray-700">Date de décès</span>
       <input
         type="date"
         name="dateDeces"
         value={formatDate(personne.dateDeces)}
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
       />
     </label>
 
-    <label
-      >Date de naissance
+    <label class="block">
+      <span class="text-gray-700">Date de naissance</span>
       <input
         type="date"
         name="dateNaissance"
         value={formatDate(personne.dateNaissance)}
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
       />
     </label>
 
-    <label
-      >Lieu de naissance
-      <input type="text" name="lieuNaissance" value={personne.lieuNaissance} />
+    <label class="block">
+      <span class="text-gray-700">Lieu de naissance</span>
+      <input
+        type="text"
+        name="lieuNaissance"
+        value={personne.lieuNaissance}
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+      />
     </label>
 
-    <label
-      >nom
-      <input type="text" name="nom" value={personne.nom} />
+    <label class="block">
+      <span class="text-gray-700">Nom</span>
+      <input
+        required
+        type="text"
+        name="nom"
+        value={personne.nom}
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+      />
     </label>
 
-    <fieldset class="block! col-span-2">
-      <legend>Profession</legend>
-      {
-        Object.entries(PersonnesProfessionOptions).map(([key, value]) => (
-          <label>
-            {key}
-            <input
-              type="checkbox"
-              name="profession"
-              checked={personne.profession?.includes(value)}
-              value={value}
-            />
-          </label>
-        ))
-      }
+    <fieldset class="block col-span-2 border border-gray-300 p-4 rounded-md">
+      <legend class="text-gray-700 font-semibold">Profession</legend>
+      <div class="grid grid-cols-2 gap-2 mt-2">
+        {
+          Object.entries(PersonnesProfessionOptions).map(([key, value]) => (
+            <label class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="profession"
+                checked={personne.profession?.includes(value)}
+                value={value}
+                class="rounded text-blue-600"
+              />
+              {key}
+            </label>
+          ))
+        }
+      </div>
     </fieldset>
 
-    <button>Envoyer</button>
+    <button
+      class="col-span-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+      >{id ? "Mettre à jour" : "Ajouter"}</button
+    >
   </form>
 </Layout>
