@@ -8,27 +8,40 @@ import {
 } from "../../../pocketbase-typegen";
 
 import GithubSlugger from "github-slugger";
+import type { ClientResponseError } from "pocketbase";
 
 const slugger = new GithubSlugger();
 
 export const prerender = false;
 
 const id = Astro.params.id;
-
+let message;
 const pb = Astro.locals.pb;
 
-const personne = id
+let personne;
+try {
+  personne = id
   ? await pb.collection("personnes").getOne(id)
   : ({} as PersonnesResponse);
+} catch (error) {
+  console.error("Erreur lors de la récupération de la personne", error);
+  message = (error as ClientResponseError).message;
+  personne = {} as PersonnesResponse;
+}
 
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();
+  try {
   const personne = await (id
     ? pb.collection("personnes").update(id, data)
     : pb.collection("personnes").create(data));
   return Astro.redirect(
     `/personnes/${personne.id}-${encodeURIComponent(personne.nom)}`
   );
+  } catch (error) {
+    console.error("erreur à la maj de la personne ou de la création", error);
+    message = (error as ClientResponseError).message;
+  }
 }
 
 function formatDate(date: string) {
