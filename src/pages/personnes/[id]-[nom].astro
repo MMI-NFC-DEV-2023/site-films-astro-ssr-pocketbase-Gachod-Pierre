@@ -32,6 +32,9 @@ const personne = await Astro.locals.pb
   
       <div>
         <h2>Personne : {personne.nom}</h2>
+
+        {Astro.locals.pb.authStore.isValid && <a href={`/personnes/edit/${personne.id}`}>Edit</a>}
+
         <p>
           films ou il est producteur : {""}
           {personne.expand?.films_via_producteur?.map((f) => (

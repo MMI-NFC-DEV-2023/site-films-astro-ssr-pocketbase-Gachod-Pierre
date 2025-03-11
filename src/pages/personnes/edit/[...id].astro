@@ -1,31 +1,49 @@
 ---
+import { Debug } from "astro:components";
 import Layout from "../../../layouts/Layout.astro";
 import {
   PersonnesNationaliteOptions,
   PersonnesProfessionOptions,
+  type PersonnesResponse,
 } from "../../../pocketbase-typegen";
 
 export const prerender = false;
 
+const id = Astro.params.id;
+
 const pb = Astro.locals.pb;
+
+const personne = id
+  ? await pb.collection("personnes").getOne(id)
+  : ({} as PersonnesResponse);
+
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();
-  const personne = await pb.collection("personnes").create(data);
-
+  const personne = await (id
+    ? pb.collection("personnes").update(id, data)
+    : pb.collection("personnes").create(data));
   return Astro.redirect(`/personnes/${personne.id}-${personne.nom}`);
+}
+
+function formatDate(date: string) {
+  return date ? new Date(date).toISOString().split("T")[0] : "";
 }
 ---
 
 <Layout pageTitle="Edit personne">
+  <Debug {personne} />
   <h1>Edit personne</h1>
 
   <form class="*:contents grid grid-cols-2" method="post">
+    <input type="hidden" name="id" value={personne.id} />
     <label>
       Nationalite
       <select name="Nationalite">
         {
           Object.entries(PersonnesNationaliteOptions).map(([key, value]) => (
-            <option value={key}>{value}</option>
+            <option selected={value === personne.Nationalite} value={value}>
+              {key}
+            </option>
           ))
         }
       </select>
@@ -33,22 +51,30 @@ if (Astro.request.method === "POST") {
 
     <label
       >Date de deces
-      <input type="date" name="dateDeces" />
+      <input
+        type="date"
+        name="dateDeces"
+        value={formatDate(personne.dateDeces)}
+      />
     </label>
 
     <label
       >Date de naissance
-      <input type="date" name="dateNaissance" />
+      <input
+        type="date"
+        name="dateNaissance"
+        value={formatDate(personne.dateNaissance)}
+      />
     </label>
 
     <label
       >Lieu de naissance
-      <input type="text" name="lieuNaissance" />
+      <input type="text" name="lieuNaissance" value={personne.lieuNaissance} />
     </label>
 
     <label
       >nom
-      <input type="text" name="nom" />
+      <input type="text" name="nom" value={personne.nom} />
     </label>
 
     <label>
@@ -56,7 +82,12 @@ if (Astro.request.method === "POST") {
       <select name="profession" multiple>
         {
           Object.entries(PersonnesProfessionOptions).map(([key, value]) => (
-            <option value={key}>{value}</option>
+            <option
+              selected={personne.profession?.includes(value)}
+              value={value}
+            >
+              {key}
+            </option>
           ))
         }
       </select>
