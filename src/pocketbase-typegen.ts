@@ -117,7 +117,7 @@ export type PersonnesRecord = {
 	id: string
 	lieuNaissance?: string
 	nom?: string
-	profession?: PersonnesProfessionOptions
+	profession?: PersonnesProfessionOptions[]
 }
 
 export type RolesRecord = {
